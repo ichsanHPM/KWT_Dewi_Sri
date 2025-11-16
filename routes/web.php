@@ -2,8 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\PublicController; // Untuk halaman publik
-use App\Http\Controllers\UserController; // Untuk aksi user (pesan, dll)
+use App\Http\Controllers\PublicController; 
+use App\Http\Controllers\UserController; 
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ProdukController as AdminProdukController;
 use App\Http\Controllers\Admin\GaleriController as AdminGaleriController;

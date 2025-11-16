@@ -16,7 +16,7 @@ return new class extends Migration
 
             //Produk
             $table->string('nama_produk', '100');
-            $table->float('harga_produk');
+            $table->decimal('harga_produk', 10, 2);
             $table->text('deskripsi_produk');
 
             //Detail Produk

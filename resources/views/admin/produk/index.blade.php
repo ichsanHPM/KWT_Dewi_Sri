@@ -35,7 +35,7 @@
                     <td>{{ $produk->id }}</td>
                     <td>
                         @if($produk->foto)
-                            <img src="{{ asset('storage/produks/' . $produk->foto) }}" 
+                            <img src="{{ asset('uploads/produks/' . $produk->foto) }}" 
                                  alt="{{ $produk->nama_produk }}" 
                                  style="width: 100px; height: auto;">
                         @else
@@ -43,10 +43,18 @@
                         @endif
                     </td>
                     <td>{{ $produk->nama_produk }}</td>
-                    <td>Rp {{ number_format($produk->harga, 0, ',', '.') }}</td>
+                    <td>Rp {{ number_format($produk->harga_produk, 0, ',', '.') }}</td>
                     <td>
-                        <a href="#" class="btn btn-sm btn-warning">Edit</a>
-                        <a href="#" class="btn btn-sm btn-danger">Hapus</a>
+                        <a href="{{ route('admin.produk.edit', $produk->id) }}" class="btn btn-sm btn-warning">Edit</a>
+                        <form action="{{ route('admin.produk.destroy', $produk->id) }}" method="POST" class="d-inline">
+                            @csrf
+                            @method('DELETE')
+    
+                            <button type="submit" class="btn btn-sm btn-danger" 
+                                    onclick="return confirm('Apakah Anda yakin ingin menghapus produk ini?')">
+                                Hapus
+                            </button>
+                        </form>
                     </td>
                 </tr>
                 @empty

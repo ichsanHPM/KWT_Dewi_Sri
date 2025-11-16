@@ -12,8 +12,8 @@ class Produk extends Model
     //Daftar kolom yang Boleh diisi secara massal.
     protected $fillable = [
         'nama_produk',
-        'harga',
-        'deskripsi',
+        'harga_produk',
+        'deskripsi_produk',
         'spesifikasi',
         'foto',
     ];
