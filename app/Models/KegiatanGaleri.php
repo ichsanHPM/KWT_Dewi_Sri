@@ -13,8 +13,8 @@ class KegiatanGaleri extends Model
      * Daftar kolom yang Boleh diisi secara massal.
      */
     protected $fillable = [
-        'judul',
-        'deskripsi',
+        'judul_kegiatan',
+        'deskripsi_kegiatan',
         'foto',
     ];
 }
