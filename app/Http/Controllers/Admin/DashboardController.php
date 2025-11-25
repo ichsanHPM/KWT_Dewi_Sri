@@ -3,9 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Pesanan; // <-- Impor Model Pesanan
+use App\Models\Pesanan; 
 use App\Models\Produk;
 use App\Models\User;
+use App\Models\KegiatanGaleri;
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
@@ -20,11 +21,13 @@ class DashboardController extends Controller
         $jumlah_produk = Produk::count();
         $jumlah_pesanan = Pesanan::count();
         $jumlah_user = User::where('role', 'user')->count(); // Hanya user biasa
+        $jumlah_galeri = KegiatanGaleri::count();
 
         return view('admin.dashboard', compact(
             'jumlah_produk',
             'jumlah_pesanan',
-            'jumlah_user'
+            'jumlah_user',
+            'jumlah_galeri'
         ));
     }
 
