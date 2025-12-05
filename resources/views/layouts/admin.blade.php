@@ -15,8 +15,8 @@
         #wrapper.toggled #sidebar-wrapper { margin-left: -250px; }
         #page-content-wrapper { width: 100%; transition: all 0.25s ease-out; }
         .list-group-item { border: none; padding: 15px 20px; font-weight: 500; color: #6c757d; transition: all 0.3s; }
-        .list-group-item:hover, .list-group-item.active { background-color: #f8f9fa; color: #0d6efd; border-left: 4px solid #0d6efd; }
-        .sidebar-heading { padding: 1.5rem 1.25rem; font-size: 1.2rem; font-weight: bold; color: #0d6efd; }
+        .list-group-item:hover, .list-group-item.active {background-color: #f0fff4; /* Background hijau sangat muda */color: #198754; /* Hijau KWT */border-left: 4px solid #198754; /* Hijau KWT */}
+        .sidebar-heading {padding: 1.5rem 1.25rem;font-size: 1.2rem;font-weight: bold;color: #198754; /* Hijau KWT */}
         
         /* Style umum untuk konten */
         .card-modern { background: #fff; border: none; border-radius: 15px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); transition: transform 0.2s; height: 100%; }
@@ -28,8 +28,13 @@
     <div class="d-flex" id="wrapper">
 
         <div id="sidebar-wrapper">
-            <div class="sidebar-heading text-center border-bottom">
-                <i class="fas fa-leaf me-2"></i> KWT Dewi Sri
+            <div class="sidebar-heading text-center border-bottom py-4">
+                <img src="{{ asset('img/logo.jpg') }}" 
+                    alt="Logo KWT" 
+                    width="60" 
+                    height="60"
+                    class="rounded-circle shadow-sm border border-2 border-white mb-2 d-block mx-auto">
+                <span class="fw-bold text-success">KWT Dewi Sri</span>
             </div>
             <div class="list-group list-group-flush my-3">
                 <a href="{{ route('admin.dashboard') }}" class="list-group-item list-group-item-action {{ request()->is('admin/dashboard') ? 'active' : '' }}">
@@ -41,10 +46,12 @@
                 <a href="{{ route('admin.galeri.index') }}" class="list-group-item list-group-item-action {{ request()->is('admin/galeri*') ? 'active' : '' }}">
                     <i class="fas fa-images me-2"></i> Kelola Galeri
                 </a>
-                <a href="#" class="list-group-item list-group-item-action disabled">
-                    <i class="fas fa-shopping-cart me-2"></i> Pesanan
+                <a href="{{ route('admin.pesanan.index') }}" class="list-group-item list-group-item-action {{ request()->is('admin/pesanan*') ? 'active' : '' }}">
+                    <i class="fas fa-shopping-cart me-2"></i> Pesanan Masuk
                 </a>
-
+                <a href="{{ route('admin.pesanan.arsip') }}" class="list-group-item list-group-item-action {{ request()->is('admin/riwayat-selesai*') ? 'active' : '' }}">
+                    <i class="fas fa-archive me-2"></i> Arsip Selesai
+                </a>
                 <form action="{{ route('logout') }}" method="POST" class="mt-auto">
                     @csrf
                     <button type="submit" class="list-group-item list-group-item-action text-danger">

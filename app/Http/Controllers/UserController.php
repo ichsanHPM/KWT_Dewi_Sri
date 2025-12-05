@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Produk;
 use App\Models\Pesanan;
 use App\Models\KonfirmasiPembayaran;
+use App\Models\RiwayatPemesanan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth; // <-- Kita butuh ini untuk tahu siapa yg login
 
@@ -19,7 +20,8 @@ class UserController extends Controller
     {
         // 1. Validasi input (jika Anda punya input jumlah, dll.)
         $request->validate([
-            'jumlah_pesanan' => 'required|integer|min:1'
+            'jumlah_pesanan' => 'required|integer|min:1',
+            'alamat_pengiriman' => 'required|string|max:500'
         ]);
 
         // 2. Ambil data produk yg mau dibeli
@@ -29,13 +31,14 @@ class UserController extends Controller
         $user = Auth::user();
 
         // 4. Hitung total harga
-        $total_harga = $produk->harga * $request->jumlah_pesanan;
+        $total_harga = $produk->harga_produk * $request->jumlah_pesanan;
 
         // 5. Buat pesanan baru di database
         Pesanan::create([
             'user_id' => $user->id,
             'produk_id' => $produk->id,
-            'tanggal_pesan' => now(), // Ambil tanggal hari ini
+            'tanggal_pesan' => now(), 
+            'alamat_pengiriman' => $request->alamat_pengiriman,
             'jumlah_pesanan' => $request->jumlah_pesanan,
             'total_harga' => $total_harga,
             'status' => 'Menunggu Pembayaran',
@@ -46,15 +49,48 @@ class UserController extends Controller
     }
 
     /**
+     * Membatalkan pesanan (Menghapus data).
+     */
+    public function batalkanPesanan($id)
+    {
+        // 1. Cari pesanan
+        $pesanan = Pesanan::findOrFail($id);
+
+        // 2. Cek Keamanan:
+        // - Apakah ini punya user yang sedang login?
+        // - Apakah statusnya masih 'Menunggu Pembayaran'?
+        if ($pesanan->user_id != Auth::id() || $pesanan->status != 'Menunggu Pembayaran') {
+            return redirect()->back()->with('error', 'Pesanan tidak dapat dibatalkan.');
+        }
+
+        // 3. Hapus pesanan
+        $pesanan->delete();
+
+        // 4. Kembali dengan pesan sukses
+        return redirect()->back()->with('success', 'Pesanan berhasil dibatalkan.');
+    }
+
+    /**
      * Menampilkan halaman riwayat pesanan milik user.
      * Ini dipanggil dari Rute: Route::get('/riwayat-pesanan', ...)
      */
     public function riwayat()
     {
-        // Ambil hanya pesanan milik user yang sedang login
-        $pesanans = Pesanan::where('user_id', Auth::id())
-                           ->latest() // Urutkan dari yg terbaru
-                           ->get();
+        $userId = Auth::id();
+
+        // 1. Ambil pesanan yang masih AKTIF (Belum selesai/Ditolak)
+        $pesanan_aktif = Pesanan::where('user_id', $userId)
+                                ->with('produk') // Load data produk biar tidak error
+                                ->get();
+
+        // 2. Ambil pesanan yang sudah SELESAI (Dari tabel Arsip)
+        $pesanan_selesai = RiwayatPemesanan::where('user_id', $userId)
+                                        ->with('produk')
+                                        ->get();
+
+        // 3. GABUNGKAN keduanya (Merge)
+        // Kita gabung, lalu urutkan berdasarkan tanggal terbaru
+        $pesanans = $pesanan_aktif->concat($pesanan_selesai)->sortByDesc('created_at');
 
         return view('user.riwayat', compact('pesanans'));
     }
@@ -95,13 +131,18 @@ class UserController extends Controller
             'tanggal_konfirmasi' => 'required|date',
         ]);
 
-        // 2. Handle upload foto
+        // 2. Handle upload foto (PERBAIKAN: Gunakan move ke public/uploads)
         $namaFileFoto = '';
         if ($request->hasFile('bukti_transfer')) {
             $file = $request->file('bukti_transfer');
-            $namaFileFoto = time() . '_' . $file->getClientOriginalName();
-            // Simpan ke folder 'storage/app/public/bukti_pembayaran'
-            $file->storeAs('public/bukti_pembayaran', $namaFileFoto);
+            
+            // Bersihkan nama file (opsional tapi bagus)
+            $namaAsli = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+            // Tambahkan timestamp agar unik
+            $namaFileFoto = time() . '_' . preg_replace('/[^A-Za-z0-9\-]/', '', $namaAsli) . '.' . $file->getClientOriginalExtension();
+            
+            // PINDAHKAN ke folder public/uploads/bukti_pembayaran
+            $file->move(public_path('uploads/bukti_pembayaran'), $namaFileFoto);
         }
 
         // 3. Simpan data konfirmasi

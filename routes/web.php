@@ -40,6 +40,7 @@ Route::middleware(['auth', 'role:user'])->group(function () {
     // Halaman untuk melihat riwayat pesanan si user
     Route::get('/riwayat-pesanan', [UserController::class, 'riwayat'])->name('pesanan.riwayat');
 
+    Route::delete('/pesan/{id}/batal', [UserController::class, 'batalkanPesanan'])->name('pesan.batal');
 });
 
 
@@ -55,8 +56,17 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     // Rute untuk Kelola Galeri (CRUD)
     Route::resource('galeri', AdminGaleriController::class);
 
+    // Melihat daftar Pesanan Masuk
+    Route::get('/pesanan', [DashboardController::class, 'daftarPesanan'])->name('pesanan.index'); 
+
     // Rute untuk melihat riwayat semua pesanan user
-    Route::get('/pesanan', [DashboardController::class, 'daftarPesanan'])->name('pesanan.index');
+    Route::post('/pesanan/{id}/verifikasi', [DashboardController::class, 'verifikasiPesanan'])->name('pesanan.verifikasi');
+
+    // Menolak pesanan
+    Route::post('/pesanan/{id}/tolak', [DashboardController::class, 'tolakPesanan'])->name('pesanan.tolak');
+
+    // Melihat Arsip Pesanan Selesai
+    Route::get('/riwayat-selesai', [DashboardController::class, 'arsipPesanan'])->name('pesanan.arsip');
 
 });
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
