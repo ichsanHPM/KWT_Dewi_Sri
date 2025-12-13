@@ -99,7 +99,7 @@
                         <li class="mb-3 d-flex align-items-center">
                             <i class="fab fa-instagram me-3 text-success"></i>
                             <a href="https://www.instagram.com/dewisri_kwt" target="_blank" class="text-white-50 text-decoration-none hover-text-white">
-                                @kwtdewisri
+                                @dewisri_kwt
                             </a>
                         </li>
 

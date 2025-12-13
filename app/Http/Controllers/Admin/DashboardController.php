@@ -114,4 +114,18 @@ class DashboardController extends Controller
 
     return view('admin.pesanan.arsip', compact('arsip'));
     }
+
+    public function hapusPesanan($id)
+    {
+        $pesanan = Pesanan::findOrFail($id);
+
+        // Hapus juga data konfirmasi pembayaran jika ada (biar bersih)
+        if ($pesanan->konfirmasi) {
+            $pesanan->konfirmasi->delete();
+        }
+
+        $pesanan->delete();
+
+        return redirect()->back()->with('success', 'Data pesanan berhasil dihapus permanen.');
+    }
 }

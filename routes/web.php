@@ -68,5 +68,6 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     // Melihat Arsip Pesanan Selesai
     Route::get('/riwayat-selesai', [DashboardController::class, 'arsipPesanan'])->name('pesanan.arsip');
 
+    Route::delete('/pesanan/{id}/hapus', [DashboardController::class, 'hapusPesanan'])->name('pesanan.hapus');
 });
 
