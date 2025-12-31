@@ -11,19 +11,19 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('produks', function (Blueprint $table) {
-            // Hapus "->after('harga')" agar tidak error
-            $table->integer('stok')->default(0)->after('harga_produk');
+        Schema::table('pesanans', function (Blueprint $table) {
+        // Taruh setelah user_id biar rapi
+        $table->string('no_hp', 20)->after('user_id'); 
         });
     }
 
     /**
      * Reverse the migrations.
      */
-    public function down()
+    public function down(): void
     {
-        Schema::table('produks', function (Blueprint $table) {
-        $table->dropColumn('stok');
+        Schema::table('pesanans', function (Blueprint $table) {
+        $table->dropColumn('no_hp');
         });
     }
 };

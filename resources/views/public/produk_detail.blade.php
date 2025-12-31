@@ -72,6 +72,17 @@
                                 </div>
 
                                 <div class="mb-3">
+                                    <label class="form-label fw-bold">Nomor WhatsApp / HP</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light"><i class="fas fa-phone"></i></span>
+                                        <input type="text" name="no_hp" class="form-control" 
+                                            placeholder="Contoh: 081234567890" 
+                                            value="{{ Auth::user()->no_hp ?? '' }}" required>
+                                    </div>
+                                    <div class="form-text small">Nomor yang bisa dihubungi kurir saat pengantaran.</div>
+                                </div>
+
+                                <div class="mb-3">
                                     <label class="form-label fw-bold">Metode Pengiriman</label>
                                     <div class="btn-group w-100" role="group">
                                         <input type="radio" class="btn-check" name="metode_pengiriman" id="opsi_ambil" value="ambil" checked onchange="toggleAlamat()">

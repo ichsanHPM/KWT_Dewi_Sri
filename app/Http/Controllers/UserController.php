@@ -7,7 +7,9 @@ use App\Models\Produk;
 use App\Models\Pesanan;
 use App\Models\KonfirmasiPembayaran;
 use App\Models\RiwayatPemesanan;
+use App\Services\FonnteService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth; // <-- Kita butuh ini untuk tahu siapa yg login
 
 class UserController extends Controller
@@ -21,6 +23,7 @@ class UserController extends Controller
         // 1. Validasi input (jika Anda punya input jumlah, dll.)
         $request->validate([
             'jumlah_pesanan' => 'required|integer|min:1',
+            'no_hp' => 'required|string|max:20',
             'dusun_id' => 'required_if:metode_pengiriman,antar',
             'alamat_detail' => 'required_if:metode_pengiriman,antar',
         ]);
@@ -61,8 +64,9 @@ class UserController extends Controller
         $total_harga = ($produk->harga_produk * $request->jumlah_pesanan) + $ongkir;
 
         // 5. Buat pesanan baru di database
-        Pesanan::create([
+        $pesananBaru = Pesanan::create([
             'user_id' => $user->id,
+            'no_hp' => $request->no_hp,
             'produk_id' => $produk->id,
             'tanggal_pesan' => now(), 
             'alamat_pengiriman' => $alamat_final,
@@ -72,8 +76,29 @@ class UserController extends Controller
             'status' => 'Menunggu Pembayaran',
         ]);
 
+        //Kurangi stok
         $produk->decrement('stok', $request->jumlah_pesanan);
 
+        //NOTIFIKASI WA (KE ADMIN)
+        try {
+            // Ganti nomor ini dengan NOMOR HP ADMIN yang asli (08xxx atau 62xxx)
+            $nomorAdmin = '083894276457'; 
+
+            $pesan = "*PESANAN BARU MASUK!* 🛍️\n\n" .
+                     "No. Pesanan: #{$pesananBaru->id}\n" .
+                     "Pelanggan: {$user->name} ({$request->no_hp})\n" .
+                     "Produk: {$produk->nama_produk}\n" .
+                     "Jumlah: {$request->jumlah_pesanan} pcs\n" .
+                     "Total: Rp " . number_format($total_harga, 0, ',', '.') . "\n" .
+                     "Pengiriman: {$alamat_final}\n\n" .
+                     "Mohon segera cek dashboard admin untuk verifikasi.";
+
+            FonnteService::kirimPesan($nomorAdmin, $pesan);
+            
+        } catch (\Exception $e) {
+            // Biarkan kosong agar jika WA gagal, website tidak error
+            Log::error("Gagal kirim notif WA: " . $e->getMessage());
+        }
         // 6. Arahkan user ke halaman riwayat pesanan (atau halaman lain)
         return redirect()->route('pesanan.riwayat')->with('success', 'Pesanan Anda telah dibuat!');
     }

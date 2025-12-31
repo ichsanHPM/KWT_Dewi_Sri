@@ -31,6 +31,12 @@
                         <td>
                             <div class="fw-bold">{{ $pesanan->user->name }}</div>
                             <small class="text-muted d-block">{{ $pesanan->user->email }}</small>
+                            <div class="mb-2">
+                                <i class="fab fa-whatsapp text-success me-1"></i>
+                                <a href="https://wa.me/{{ $pesanan->no_hp }}" target="_blank" class="text-success text-decoration-none fw-bold small">
+                                    {{ $pesanan->no_hp }}
+                                </a>
+                            </div>
                             <div class="mt-2 p-2 bg-light rounded border small">
                                 <i class="fas fa-map-marker-alt text-danger me-1"></i> 
                                 {{ $pesanan->alamat_pengiriman }}

@@ -12,6 +12,7 @@ class Pesanan extends Model
     // Daftar kolom yang boleh diisi
     protected $fillable = [
         'user_id',
+        'no_hp',
         'produk_id',
         'tanggal_pesan',
         'alamat_pengiriman',
