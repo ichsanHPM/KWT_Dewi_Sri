@@ -15,8 +15,8 @@ class ProdukController extends Controller
      */
     public function index()
     {
-        // 1. Ambil semua data produk dari database
-        $produks = Produk::all();
+        // 1. Ambil produk yang ada stoknya
+        $produks = Produk::latest()->paginate(10);
 
         // 2. Tampilkan halaman view, dan kirim data $produks ke sana
         return view('admin.produk.index', compact('produks'));
@@ -41,6 +41,7 @@ class ProdukController extends Controller
             'nama_produk' => 'required|string|max:100',
             'harga_produk' => 'required|numeric|min:0',
             'deskripsi_produk' => 'required|string',
+            'stok' => 'required|numeric|min:0',
             'spesifikasi' => 'nullable|string',
             'foto' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // foto maks 2MB
         ]);
@@ -60,6 +61,7 @@ class ProdukController extends Controller
             'nama_produk' => $request->nama_produk,
             'harga_produk' => $request->harga_produk,
             'deskripsi_produk' => $request->deskripsi_produk,
+            'stok' => $request->stok,
             'spesifikasi' => $request->spesifikasi,
             'foto' => $namaFileFoto, // Simpan nama filenya ke database
         ]);
@@ -100,6 +102,7 @@ class ProdukController extends Controller
             'nama_produk' => 'required|string|max:100',
             'harga_produk' => 'required|numeric|min:0',
             'deskripsi_produk' => 'required|string',
+            'stok' => 'required|numeric|min:0',
             'spesifikasi' => 'nullable|string',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // foto 'nullable' artinya boleh kosong
         ]);

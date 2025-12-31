@@ -27,7 +27,15 @@
 
         <div class="col-md-6">
             <h1 class="fw-bold text-dark mb-2">{{ $produk->nama_produk }}</h1>
-            <h2 class="text-success fw-bold mb-4">Rp {{ number_format($produk->harga_produk, 0, ',', '.') }}</h2>
+            <h2 class="text-success fw-bold mb-2">Rp {{ number_format($produk->harga_produk, 0, ',', '.') }}</h2>
+
+            <div class="mb-4">
+                @if($produk->stok > 0)
+                    <span class="badge bg-success fs-6"><i class="fas fa-check me-1"></i> Stok Tersedia: {{ $produk->stok }}</span>
+                @else
+                    <span class="badge bg-danger fs-6"><i class="fas fa-times me-1"></i> Stok Habis</span>
+                @endif
+            </div>
 
             <div class="mb-4">
                 <h5 class="fw-bold text-dark">Deskripsi</h5>
@@ -44,30 +52,52 @@
             <hr class="my-4">
 
             @auth
-                <div class="card border-success mb-3">
-                    <div class="card-body bg-success bg-opacity-10">
-                        <h5 class="card-title fw-bold text-success mb-3">Pesan Sekarang</h5>
-                        
-                        <form action="{{ route('pesan.store', $produk->id) }}" method="POST">
-                            @csrf
-                            <div class="mb-3">
-                                <label class="form-label fw-bold">Jumlah Pesanan</label>
-                                <div class="input-group" style="width: 150px;">
-                                    <button class="btn btn-outline-success" type="button" onclick="this.parentNode.querySelector('input[type=number]').stepDown()">-</button>
-                                    <input type="number" class="form-control text-center" name="jumlah_pesanan" value="1" min="1">
-                                    <button class="btn btn-outline-success" type="button" onclick="this.parentNode.querySelector('input[type=number]').stepUp()">+</button>
+                @if($produk->stok > 0)
+                    <div class="card border-success mb-3">
+                        <div class="card-body bg-success bg-opacity-10">
+                            <h5 class="card-title fw-bold text-success mb-3">Pesan Sekarang</h5>
+                            
+                            <form action="{{ route('pesan.store', $produk->id) }}" method="POST">
+                                @csrf
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Jumlah Pesanan</label>
+                                    <div class="input-group" style="width: 150px;">
+                                        <button class="btn btn-outline-success" type="button" 
+                                            onclick="this.parentNode.querySelector('input[type=number]').stepDown()">-</button>
+                                        
+                                        <input type="number" 
+                                               class="form-control text-center" 
+                                               name="jumlah_pesanan" 
+                                               value="1" 
+                                               min="1" 
+                                               max="{{ $produk->stok }}" 
+                                               oninput="if(parseInt(this.value) > {{ $produk->stok }}) this.value = {{ $produk->stok }}; if(parseInt(this.value) < 1) this.value = 1;"
+                                               required>
+
+                                        <button class="btn btn-outline-success" type="button" 
+                                            onclick="this.parentNode.querySelector('input[type=number]').stepUp()">+</button>
+                                    </div>
+                                    <div class="form-text text-muted small">Maksimal pembelian: {{ $produk->stok }} pcs</div>
                                 </div>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label fw-bold">Alamat Pengiriman Lengkap</label>
-                                <textarea name="alamat_pengiriman" class="form-control" rows="3" required placeholder="Jln. Mawar No. 10, RT/RW..."></textarea>
-                            </div>
-                            <button type="submit" class="btn btn-success w-100 py-2 fw-bold rounded-pill shadow-sm">
-                                <i class="fas fa-shopping-cart me-2"></i> Beli Produk Ini
-                            </button>
-                        </form>
+
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Alamat Pengiriman Lengkap</label>
+                                    <textarea name="alamat_pengiriman" class="form-control" rows="3" required placeholder="Jln. Mawar No. 10, RT/RW..."></textarea>
+                                </div>
+
+                                <button type="submit" class="btn btn-success w-100 py-2 fw-bold rounded-pill shadow-sm">
+                                    <i class="fas fa-shopping-cart me-2"></i> Beli Produk Ini
+                                </button>
+                            </form>
+                        </div>
                     </div>
-                </div>
+                @else
+                    <div class="alert alert-secondary text-center py-4">
+                        <i class="fas fa-box-open fa-3x mb-3 text-muted"></i>
+                        <h5 class="text-muted">Maaf, Stok Habis</h5>
+                        <p class="small mb-0">Silakan cek kembali nanti atau hubungi admin.</p>
+                    </div>
+                @endif
             @else
                 <div class="alert alert-warning border-warning d-flex align-items-center" role="alert">
                     <i class="fas fa-lock me-3 fa-2x text-warning"></i>
@@ -83,7 +113,6 @@
                     <small class="text-muted">Belum punya akun? <a href="{{ route('register') }}" class="text-success fw-bold">Daftar disini</a></small>
                 </div>
             @endauth
-
         </div>
     </div>
 </div>

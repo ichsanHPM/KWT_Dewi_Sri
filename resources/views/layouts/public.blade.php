@@ -49,13 +49,32 @@
                     <li class="nav-item ms-3">
                         @auth
                             @if(Auth::user()->role == 'admin')
-                                <a href="{{ route('admin.dashboard') }}" class="btn btn-login">Dashboard Admin</a>
+                                <a href="{{ route('admin.dashboard') }}" class="btn btn-login me-2">
+                                    Dashboard Admin
+                                </a>
                             @else
-                                <a href="{{ route('home') }}" class="btn btn-login">Akun Saya</a>
+                                <a href="{{ route('home') }}" class="btn btn-login me-2">
+                                    Akun Saya
+                                </a>
                             @endif
+
+                            <!-- Logout -->
+                            <a href="{{ route('logout') }}"
+                            class="btn btn-outline-danger"
+                            onclick="event.preventDefault(); document.getElementById('logout-form-public').submit();">
+                                Logout
+                            </a>
+
+                            <form id="logout-form-public" action="{{ route('logout') }}" method="POST" class="d-none">
+                                @csrf
+                            </form>
                         @else
-                            <a href="{{ route('login') }}" class="btn btn-outline-success px-4 me-2" style="border-radius: 50px;">Masuk</a>
-                            <a href="{{ route('register') }}" class="btn btn-login">Daftar</a>
+                            <a href="{{ route('login') }}" class="btn btn-outline-success px-4 me-2" style="border-radius: 50px;">
+                                Masuk
+                            </a>
+                            <a href="{{ route('register') }}" class="btn btn-login">
+                                Daftar
+                            </a>
                         @endauth
                     </li>
                 </ul>

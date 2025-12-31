@@ -41,6 +41,12 @@
                     </div>
 
                     <div class="mb-3">
+                        <label for="stok" class="form-label fw-bold">Stok Produk</label>
+                        <input type="number" class="form-control" id="stok" name="stok" value="{{ old('stok', 0) }}" min="0" required placeholder="Masukkan jumlah stok tersedia">
+                        <div class="form-text">Masukkan angka 0 jika barang habis.</div>
+                    </div>
+                    
+                    <div class="mb-3">
                         <label for="deskripsi_produk" class="form-label fw-bold">Deskripsi</label>
                         <textarea class="form-control" id="deskripsi_produk" name="deskripsi_produk" rows="3" placeholder="Jelaskan produk ini...">{{ old('deskripsi_produk') }}</textarea>
                     </div>

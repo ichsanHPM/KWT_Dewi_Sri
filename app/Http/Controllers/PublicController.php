@@ -13,8 +13,8 @@ class PublicController extends Controller
      */
     public function index()
     {
-        // Ambil beberapa produk terbaru untuk ditampilkan di landing page
-        $produks = Produk::latest()->take(4)->get(); // Ambil 4 produk terbaru
+        // Ambil 6 produk terbaru yang STOKNYA ADA
+        $produks = Produk::where('stok', '>', 0)->latest()->take(4)->get();
 
         return view('welcome', compact('produks'));
     }
@@ -24,7 +24,8 @@ class PublicController extends Controller
      */
     public function produk()
     {
-        $produks = Produk::all(); // Ambil semua produk
+        $produks = Produk::where('stok', '>', 0)->latest()->paginate(9);
+
         return view('public.produk_list', compact('produks'));
     }
 
@@ -34,6 +35,7 @@ class PublicController extends Controller
     public function showProduk($id)
     {
         $produk = Produk::findOrFail($id); // Cari produk, jika tidak ada, error 404
+
         return view('public.produk_detail', compact('produk'));
     }
 

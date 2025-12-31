@@ -44,6 +44,11 @@
                     </div>
 
                     <div class="mb-3">
+                        <label for="stok" class="form-label fw-bold">Stok Produk</label>
+                        <input type="number" class="form-control" id="stok" name="stok" value="{{ old('stok', $produk->stok) }}" min="0" required>
+                    </div>
+
+                    <div class="mb-3">
                         <label for="deskripsi_produk" class="form-label fw-bold">Deskripsi</label>
                         <textarea class="form-control" id="deskripsi_produk" name="deskripsi_produk" rows="3">{{ old('deskripsi_produk', $produk->deskripsi_produk) }}</textarea>
                     </div>

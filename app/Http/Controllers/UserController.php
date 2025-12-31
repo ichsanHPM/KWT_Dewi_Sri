@@ -27,6 +27,11 @@ class UserController extends Controller
         // 2. Ambil data produk yg mau dibeli
         $produk = Produk::findOrFail($id);
 
+        // --- validasi stok
+        if ($request->jumlah_pesanan > $produk->stok) {
+            return redirect()->back()->with('error', 'Maaf, stok tidak mencukupi. Sisa stok: ' . $produk->stok);
+        }
+
         // 3. Ambil data user yg sedang login
         $user = Auth::user();
 
@@ -43,6 +48,8 @@ class UserController extends Controller
             'total_harga' => $total_harga,
             'status' => 'Menunggu Pembayaran',
         ]);
+
+        $produk->decrement('stok', $request->jumlah_pesanan);
 
         // 6. Arahkan user ke halaman riwayat pesanan (atau halaman lain)
         return redirect()->route('pesanan.riwayat')->with('success', 'Pesanan Anda telah dibuat!');

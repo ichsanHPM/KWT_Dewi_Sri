@@ -23,6 +23,29 @@
                         </div>
                     </div>
 
+                    <div class="alert alert-info border mb-4">
+                        <div class="text-center mb-2 fw-bold">
+                            <i class="fas fa-university me-1"></i> Informasi Pembayaran
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <span>Bank</span>
+                            <strong>Bank BCA</strong>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span>No. Rekening</span>
+                            <strong>1234567890</strong>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span>Atas Nama</span>
+                            <strong>Kwt Dewi Sri</strong>
+                        </div>
+
+                        <small class="text-muted d-block mt-2 text-center">
+                            Transfer sesuai nominal agar otomatis terverifikasi
+                        </small>
+                    </div>
+
                     <form action="{{ route('konfirmasi.store', $pesanan->id) }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         

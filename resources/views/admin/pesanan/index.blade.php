@@ -41,34 +41,17 @@
                         <td class="fw-bold text-success">Rp {{ number_format($pesanan->total_harga, 0, ',', '.') }}</td>
                         
                         <td>
-                            <div class="d-flex gap-1">
-                                
-                                @if($pesanan->status == 'Menunggu Verifikasi')
-                                    <form action="{{ route('admin.pesanan.verifikasi', $pesanan->id) }}" method="POST">
-                                        @csrf
-                                        <button type="submit" class="btn btn-sm btn-success" onclick="return confirm('Terima pesanan?')"><i class="fas fa-check"></i></button>
-                                    </form>
-                                    <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#tolakModal{{ $pesanan->id }}"><i class="fas fa-times"></i></button>
-
-                                @elseif($pesanan->status == 'Dikirim')
-                                    <form action="{{ route('admin.pesanan.verifikasi', $pesanan->id) }}" method="POST">
-                                        @csrf
-                                        <button type="submit" class="btn btn-sm btn-primary" onclick="return confirm('Selesai?')"><i class="fas fa-box-open"></i> Selesai</button>
-                                    </form>
-
-                                @elseif($pesanan->status == 'Ditolak')
-                                    <form action="{{ route('admin.pesanan.hapus', $pesanan->id) }}" method="POST" onsubmit="return confirm('Hapus pesanan ini secara permanen? Data tidak bisa dikembalikan.')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-dark" title="Hapus Permanen">
-                                            <i class="fas fa-trash-alt"></i> Hapus
-                                        </button>
-                                    </form>
-                                
-                                @else
-                                    @endif
-
-                            </div>
+                            @if($pesanan->status == 'Menunggu Verifikasi')
+                                <span class="badge bg-warning text-dark"><i class="fas fa-clock me-1"></i> Menunggu Verifikasi</span>
+                            @elseif($pesanan->status == 'Dikirim')
+                                <span class="badge bg-primary"><i class="fas fa-truck me-1"></i> Dikirim</span>
+                            @elseif($pesanan->status == 'Selesai')
+                                <span class="badge bg-success"><i class="fas fa-check-circle me-1"></i> Selesai</span>
+                            @elseif($pesanan->status == 'Ditolak')
+                                <span class="badge bg-danger"><i class="fas fa-times-circle me-1"></i> Ditolak</span>
+                            @else
+                                <span class="badge bg-secondary">-</span>
+                            @endif
                         </td>
 
                         <td>
@@ -84,35 +67,39 @@
                         <td>
                             <div class="d-flex gap-1">
                                 @if($pesanan->status == 'Menunggu Verifikasi')
+                                    {{-- Tombol Terima --}}
                                     <form action="{{ route('admin.pesanan.verifikasi', $pesanan->id) }}" method="POST">
                                         @csrf
-                                        <button type="submit" class="btn btn-sm btn-success" 
-                                                onclick="return confirm('Bukti valid? Ubah status jadi DIKIRIM?')">
+                                        <button type="submit" class="btn btn-sm btn-success" onclick="return confirm('Terima pesanan?')">
                                             <i class="fas fa-check"></i>
                                         </button>
                                     </form>
-
+                                    {{-- Tombol Tolak --}}
                                     <form action="{{ route('admin.pesanan.tolak', $pesanan->id) }}" method="POST">
                                         @csrf
-                                        <button type="submit" class="btn btn-sm btn-danger" 
-                                                onclick="return confirm('Yakin ingin MENOLAK pesanan ini?')">
+                                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Tolak pesanan?')">
                                             <i class="fas fa-times"></i>
                                         </button>
                                     </form>
 
                                 @elseif($pesanan->status == 'Dikirim')
+                                    {{-- Tombol Selesai --}}
                                     <form action="{{ route('admin.pesanan.verifikasi', $pesanan->id) }}" method="POST">
                                         @csrf
-                                        <button type="submit" class="btn btn-sm btn-primary" 
-                                                onclick="return confirm('Barang sudah sampai? Arsipkan pesanan?')">
+                                        <button type="submit" class="btn btn-sm btn-primary" onclick="return confirm('Selesai?')">
                                             <i class="fas fa-box-open"></i> Selesai
                                         </button>
                                     </form>
 
                                 @elseif($pesanan->status == 'Ditolak')
-                                    <span class="badge bg-danger">Ditolak</span>
-                                @else
-                                    <button class="btn btn-sm btn-light" disabled><i class="fas fa-check"></i></button>
+                                    {{-- Tombol Hapus (Ini yang Anda cari) --}}
+                                    <form action="{{ route('admin.pesanan.hapus', $pesanan->id) }}" method="POST" onsubmit="return confirm('Hapus permanen?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-sm btn-dark" title="Hapus Permanen">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </form>
                                 @endif
                             </div>
                         </td>

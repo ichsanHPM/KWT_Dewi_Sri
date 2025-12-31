@@ -24,6 +24,7 @@
                     <th>Foto</th>
                     <th>Nama Produk</th>
                     <th>Harga</th>
+                    <th>Stok</th>
                     <th>Aksi</th>
                 </tr>
             </thead>
@@ -44,6 +45,11 @@
                     <td class="fw-bold">{{ $produk->nama_produk }}</td>
                     <td>Rp {{ number_format($produk->harga_produk, 0, ',', '.') }}</td>
                     <td>
+                        <span class="badge {{ $produk->stok > 0 ? 'bg-success' : 'bg-danger' }}">
+                            {{ $produk->stok }} pcs
+                        </span>
+                    </td>
+                    <td>
                         <a href="{{ route('admin.produk.edit', $produk->id) }}" class="btn btn-sm btn-warning text-white me-2">
                             <i class="fas fa-edit"></i>
                         </a>
@@ -59,7 +65,7 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="5" class="text-center py-5 text-muted">Belum ada data produk.</td>
+                    <td colspan="6" class="text-center py-5 text-muted">Belum ada data produk.</td>
                 </tr>
                 @endforelse
             </tbody>
