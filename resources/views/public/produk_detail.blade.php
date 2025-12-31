@@ -59,34 +59,72 @@
                             
                             <form action="{{ route('pesan.store', $produk->id) }}" method="POST">
                                 @csrf
+    
                                 <div class="mb-3">
                                     <label class="form-label fw-bold">Jumlah Pesanan</label>
                                     <div class="input-group" style="width: 150px;">
-                                        <button class="btn btn-outline-success" type="button" 
-                                            onclick="this.parentNode.querySelector('input[type=number]').stepDown()">-</button>
-                                        
-                                        <input type="number" 
-                                               class="form-control text-center" 
-                                               name="jumlah_pesanan" 
-                                               value="1" 
-                                               min="1" 
-                                               max="{{ $produk->stok }}" 
-                                               oninput="if(parseInt(this.value) > {{ $produk->stok }}) this.value = {{ $produk->stok }}; if(parseInt(this.value) < 1) this.value = 1;"
-                                               required>
-
-                                        <button class="btn btn-outline-success" type="button" 
-                                            onclick="this.parentNode.querySelector('input[type=number]').stepUp()">+</button>
+                                        <button class="btn btn-outline-success" type="button" onclick="updateQty(-1)">-</button>
+                                        <input type="number" class="form-control text-center" id="jumlah_pesanan" name="jumlah_pesanan" 
+                                            value="1" min="1" max="{{ $produk->stok }}" readonly>
+                                        <button class="btn btn-outline-success" type="button" onclick="updateQty(1)">+</button>
                                     </div>
-                                    <div class="form-text text-muted small">Maksimal pembelian: {{ $produk->stok }} pcs</div>
+                                    <div class="form-text small">Stok tersedia: {{ $produk->stok }}</div>
                                 </div>
 
                                 <div class="mb-3">
-                                    <label class="form-label fw-bold">Alamat Pengiriman Lengkap</label>
-                                    <textarea name="alamat_pengiriman" class="form-control" rows="3" required placeholder="Jln. Mawar No. 10, RT/RW..."></textarea>
+                                    <label class="form-label fw-bold">Metode Pengiriman</label>
+                                    <div class="btn-group w-100" role="group">
+                                        <input type="radio" class="btn-check" name="metode_pengiriman" id="opsi_ambil" value="ambil" checked onchange="toggleAlamat()">
+                                        <label class="btn btn-outline-success" for="opsi_ambil">Ambil Sendiri (Gratis)</label>
+
+                                        <input type="radio" class="btn-check" name="metode_pengiriman" id="opsi_antar" value="antar" onchange="toggleAlamat()">
+                                        <label class="btn btn-outline-success" for="opsi_antar">Diantar Kurir</label>
+                                    </div>
+                                </div>
+
+                                <div id="area_pengiriman" style="display: none;">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Pilih Wilayah (Dusun)</label>
+                                        <select class="form-select" name="dusun_id" id="dusun_select" onchange="hitungTotal()">
+                                            <option value="" data-ongkir="0" selected>-- Pilih Lokasi Anda --</option>
+                                            
+                                            <optgroup label="Zona Dekat (Gratis Ongkir)">
+                                                <option value="Kentungan" data-ongkir="0">Dusun Kentungan</option>
+                                                <option value="Manukan" data-ongkir="0">Dusun Manukan</option>
+                                            </optgroup>
+
+                                            <optgroup label="Zona Jauh (+Rp 5.000)">
+                                                <option value="Banteng" data-ongkir="5000">Dusun Banteng</option>
+                                                <option value="Sanggrahan" data-ongkir="5000">Dusun Sanggrahan</option>
+                                                <option value="Tambakan" data-ongkir="5000">Dusun Tambakan/Prujakan</option>
+                                                <option value="Sumberan" data-ongkir="5000">Dusun Sumberan</option>
+                                                <option value="Tiyasan" data-ongkir="5000">Dusun Tiyasan</option>
+                                                <option value="Pogung" data-ongkir="5000">Dusun Pogung Lor/Kidul</option>
+                                                <option value="Dayu" data-ongkir="5000">Dusun Dayu</option>
+                                                <option value="Pondok" data-ongkir="5000">Dusun Pondok</option>
+                                                <option value="Ploso Kuning" data-ongkir="5000">Dusun Ploso Kuning V</option>
+                                            </optgroup>
+                                        </select>
+                                        <div class="form-text text-danger small" id="info_ongkir"></div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Detail Alamat</label>
+                                        <textarea name="alamat_detail" id="alamat_detail" class="form-control" rows="2" placeholder="Contoh: Dusun, RT, Rumah pagar biru, depan pos ronda..."></textarea>
+                                    </div>
+                                </div>
+
+                                <hr>
+
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <span class="fw-bold text-muted">Total Bayar:</span>
+                                    <h3 class="fw-bold text-success mb-0" id="tampilan_total">
+                                        Rp {{ number_format($produk->harga_produk, 0, ',', '.') }}
+                                    </h3>
                                 </div>
 
                                 <button type="submit" class="btn btn-success w-100 py-2 fw-bold rounded-pill shadow-sm">
-                                    <i class="fas fa-shopping-cart me-2"></i> Beli Produk Ini
+                                    <i class="fas fa-shopping-cart me-2"></i> Buat Pesanan
                                 </button>
                             </form>
                         </div>
@@ -116,4 +154,82 @@
         </div>
     </div>
 </div>
+
+<script>
+    // Ambil data harga dan stok dari server ke variabel JS
+    const hargaProduk = {{ $produk->harga_produk }};
+    const stokMax = {{ $produk->stok }};
+
+    // Fungsi Update Jumlah (+/-)
+    function updateQty(change) {
+        let input = document.getElementById('jumlah_pesanan');
+        let currentVal = parseInt(input.value);
+        let newVal = currentVal + change;
+        
+        // Pastikan tidak minus dan tidak lebih dari stok
+        if (newVal >= 1 && newVal <= stokMax) {
+            input.value = newVal;
+            hitungTotal(); // Update harga setiap kali jumlah berubah
+        }
+    }
+
+    // Fungsi Tampilkan/Sembunyikan Alamat
+    function toggleAlamat() {
+        const isAntar = document.getElementById('opsi_antar').checked;
+        const areaDiv = document.getElementById('area_pengiriman');
+        const alamatInput = document.getElementById('alamat_detail');
+        const dusunSelect = document.getElementById('dusun_select');
+
+        if (isAntar) {
+            areaDiv.style.display = 'block'; // Munculkan form
+            alamatInput.required = true;     // Wajib diisi
+            dusunSelect.required = true;     // Wajib diisi
+        } else {
+            areaDiv.style.display = 'none';  // Sembunyikan form
+            alamatInput.required = false;    // Tidak wajib
+            dusunSelect.required = false;    // Tidak wajib
+            dusunSelect.value = "";          // Reset pilihan dusun
+        }
+        hitungTotal(); // Update harga (kembali ke 0 ongkir jika ambil sendiri)
+    }
+
+    // Fungsi Hitung Total (Harga Barang + Ongkir)
+    function hitungTotal() {
+        // 1. Ambil Jumlah Barang
+        let qty = parseInt(document.getElementById('jumlah_pesanan').value);
+        
+        // 2. Cek Ongkir
+        let ongkir = 0;
+        let isAntar = document.getElementById('opsi_antar').checked;
+        
+        if (isAntar) {
+            let select = document.getElementById('dusun_select');
+            let selectedOption = select.options[select.selectedIndex];
+            
+            // Ambil atribut 'data-ongkir' dari opsi yang dipilih
+            if (selectedOption.value !== "") {
+                ongkir = parseInt(selectedOption.getAttribute('data-ongkir'));
+            }
+        }
+
+        // 3. Tampilkan Info Ongkir (Tulisan Merah/Hijau kecil di bawah dropdown)
+        let infoDiv = document.getElementById('info_ongkir');
+        if (ongkir > 0) {
+            infoDiv.innerHTML = "+ Ongkir Rp " + new Intl.NumberFormat('id-ID').format(ongkir);
+            infoDiv.className = "form-text text-danger small fw-bold";
+        } else if (isAntar && document.getElementById('dusun_select').value !== "") {
+             infoDiv.innerHTML = "Gratis Ongkir (Jarak Dekat)";
+             infoDiv.className = "form-text text-success small fw-bold";
+        } else {
+            infoDiv.innerHTML = "";
+        }
+
+        // 4. Kalkulasi Akhir
+        let total = (hargaProduk * qty) + ongkir;
+
+        // 5. Update Teks Total Bayar
+        document.getElementById('tampilan_total').innerText = "Rp " + new Intl.NumberFormat('id-ID').format(total);
+    }
+</script>
+
 @endsection

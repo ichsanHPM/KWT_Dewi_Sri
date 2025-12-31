@@ -21,7 +21,8 @@ class UserController extends Controller
         // 1. Validasi input (jika Anda punya input jumlah, dll.)
         $request->validate([
             'jumlah_pesanan' => 'required|integer|min:1',
-            'alamat_pengiriman' => 'required|string|max:500'
+            'dusun_id' => 'required_if:metode_pengiriman,antar',
+            'alamat_detail' => 'required_if:metode_pengiriman,antar',
         ]);
 
         // 2. Ambil data produk yg mau dibeli
@@ -35,15 +36,37 @@ class UserController extends Controller
         // 3. Ambil data user yg sedang login
         $user = Auth::user();
 
-        // 4. Hitung total harga
-        $total_harga = $produk->harga_produk * $request->jumlah_pesanan;
+        // --- LOGIKA BARU: Hitung Ongkir & Format Alamat ---
+        $ongkir = 0;
+        $alamat_final = 'Ambil Sendiri di Lokasi KWT (Pickup)'; // Default jika ambil sendiri
+
+        // Cek jika user memilih 'Diantar Kurir'
+        if ($request->metode_pengiriman == 'antar') {
+            // Daftar dusun yang kena ongkir 5.000 (Zona Jauh)
+            $zonaJauh = ['Banteng', 'Sanggrahan', 'Tambakan', 'Sumberan', 'Tiyasan', 'Pogung', 'Dayu', 'Pondok', 'Ploso Kuning'];
+            
+            // Cek apakah dusun yang dipilih ada di daftar Zona Jauh?
+            if (in_array($request->dusun_id, $zonaJauh)) {
+                $ongkir = 5000;
+            } else {
+                // Berarti Kentungan / Manukan (Zona Dekat)
+                $ongkir = 0;
+            }
+
+            // Gabungkan Dusun dan Detail Alamat menjadi satu string rapi
+            $alamat_final = "Dusun " . $request->dusun_id . " - " . $request->alamat_detail;
+        }
+
+        // 4. Hitung total harga (Produk + Ongkir)
+        $total_harga = ($produk->harga_produk * $request->jumlah_pesanan) + $ongkir;
 
         // 5. Buat pesanan baru di database
         Pesanan::create([
             'user_id' => $user->id,
             'produk_id' => $produk->id,
             'tanggal_pesan' => now(), 
-            'alamat_pengiriman' => $request->alamat_pengiriman,
+            'alamat_pengiriman' => $alamat_final,
+            'ongkir' => $ongkir,
             'jumlah_pesanan' => $request->jumlah_pesanan,
             'total_harga' => $total_harga,
             'status' => 'Menunggu Pembayaran',

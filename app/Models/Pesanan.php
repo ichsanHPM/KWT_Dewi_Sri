@@ -16,6 +16,7 @@ class Pesanan extends Model
         'tanggal_pesan',
         'alamat_pengiriman',
         'jumlah_pesanan',
+        'ongkir',
         'total_harga',
         'status',
     ];
