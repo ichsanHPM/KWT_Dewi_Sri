@@ -54,7 +54,7 @@
                                 </a>
                             @else
                                 <a href="{{ route('home') }}" class="btn btn-login me-2">
-                                    Akun Saya
+                                    Keranjang
                                 </a>
                             @endif
 
