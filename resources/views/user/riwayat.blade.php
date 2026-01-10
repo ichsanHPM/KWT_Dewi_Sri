@@ -48,7 +48,12 @@
 
                             <td>{{ \Carbon\Carbon::parse($pesanan->tanggal_pesan)->format('d M Y') }}</td>
 
-                            <td>{{ $pesanan->jumlah_pesanan }} item</td>
+                            <td>
+                                {{ $pesanan->jumlah_pesanan }} 
+                                
+                                {{-- Ambil satuan dari produk, jika produk hilang/null defaultnya 'pcs' --}}
+                                <span class="fw-bold">{{ $pesanan->produk->satuan ?? 'pcs' }}</span>
+                            </td>
 
                             <td class="fw-bold text-success">Rp {{ number_format($pesanan->total_harga, 0, ',', '.') }}</td>
                             

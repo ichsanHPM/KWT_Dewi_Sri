@@ -25,7 +25,7 @@ class Pesanan extends Model
     // Relasi ke Produk (ambil nama produk/foto)
     public function produk()
     {
-        return $this->belongsTo(Produk::class);
+        return $this->belongsTo(Produk::class, 'produk_id')->withTrashed();
     }
 
     // Relasi ke User

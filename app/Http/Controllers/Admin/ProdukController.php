@@ -42,6 +42,7 @@ class ProdukController extends Controller
             'harga_produk' => 'required|numeric|min:0',
             'deskripsi_produk' => 'required|string',
             'stok' => 'required|numeric|min:0',
+            'satuan' => 'required|string|max:50',
             'spesifikasi' => 'nullable|string',
             'foto' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // foto maks 2MB
         ]);
@@ -62,6 +63,7 @@ class ProdukController extends Controller
             'harga_produk' => $request->harga_produk,
             'deskripsi_produk' => $request->deskripsi_produk,
             'stok' => $request->stok,
+            'satuan' => $request->satuan,
             'spesifikasi' => $request->spesifikasi,
             'foto' => $namaFileFoto, // Simpan nama filenya ke database
         ]);
@@ -103,6 +105,7 @@ class ProdukController extends Controller
             'harga_produk' => 'required|numeric|min:0',
             'deskripsi_produk' => 'required|string',
             'stok' => 'required|numeric|min:0',
+            'satuan' => 'required|string|max:50',
             'spesifikasi' => 'nullable|string',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // foto 'nullable' artinya boleh kosong
         ]);

@@ -27,7 +27,7 @@
 
         <div class="col-md-6">
             <h1 class="fw-bold text-dark mb-2">{{ $produk->nama_produk }}</h1>
-            <h2 class="text-success fw-bold mb-2">Rp {{ number_format($produk->harga_produk, 0, ',', '.') }}</h2>
+            <h2 class="text-success fw-bold mb-2">Rp {{ number_format($produk->harga_produk, 0, ',', '.') }} <span class="fs-6 text-muted fw-normal">/ {{ $produk->satuan }}</span></h2>
 
             <div class="mb-4">
                 @if($produk->stok > 0)
@@ -75,9 +75,21 @@
                                     <label class="form-label fw-bold">Nomor WhatsApp / HP</label>
                                     <div class="input-group">
                                         <span class="input-group-text bg-light"><i class="fas fa-phone"></i></span>
-                                        <input type="text" name="no_hp" class="form-control" 
-                                            placeholder="Contoh: 081234567890" 
-                                            value="{{ Auth::user()->no_hp ?? '' }}" required>
+                                        
+                                        {{-- Perhatikan penambahan class @error... --}}
+                                        <input type="text" name="no_hp" class="form-control @error('no_hp') is-invalid @enderror" 
+                                            placeholder="Contoh: 08123456789" 
+                                            value="{{ old('no_hp', Auth::user()->no_hp ?? '') }}" 
+                                            inputmode="numeric" 
+                                            oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 12)"
+                                            required>
+
+                                        {{-- INI KODE UNTUK MEMUNCULKAN PESAN ERROR DI BAWAHNYA --}}
+                                        @error('no_hp')
+                                            <div class="invalid-feedback">
+                                                {{ $message }}
+                                            </div>
+                                        @enderror
                                     </div>
                                     <div class="form-text small">Nomor yang bisa dihubungi kurir saat pengantaran.</div>
                                 </div>

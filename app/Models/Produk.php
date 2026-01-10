@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Produk extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     //Daftar kolom yang Boleh diisi secara massal.
     protected $fillable = [
@@ -15,6 +16,7 @@ class Produk extends Model
         'harga_produk',
         'deskripsi_produk',
         'stok',
+        'satuan',
         'spesifikasi',
         'foto',
     ];

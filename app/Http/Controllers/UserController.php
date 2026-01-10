@@ -23,9 +23,16 @@ class UserController extends Controller
         // 1. Validasi input (jika Anda punya input jumlah, dll.)
         $request->validate([
             'jumlah_pesanan' => 'required|integer|min:1',
-            'no_hp' => 'required|string|max:20',
+            'no_hp' => 'required|numeric|digits_between:10,12',
             'dusun_id' => 'required_if:metode_pengiriman,antar',
             'alamat_detail' => 'required_if:metode_pengiriman,antar',
+        ], [
+            // --- INI BAGIAN PENTINGNYA (Pesan Error Custom) ---
+            'no_hp.required' => 'Nomor HP wajib diisi.',
+            'no_hp.numeric' => 'Nomor HP harus berupa angka.',
+            'no_hp.digits_between' => 'Nomor HP harus antara 10 sampai 12 digit.',
+            'alamat_detail.required_if' => 'Alamat lengkap wajib diisi jika minta diantar.',
+            'dusun_id.required_if' => 'Silakan pilih dusun tujuan pengiriman.',
         ]);
 
         // 2. Ambil data produk yg mau dibeli
@@ -118,11 +125,24 @@ class UserController extends Controller
             return redirect()->back()->with('error', 'Pesanan tidak dapat dibatalkan.');
         }
 
-        // 3. Hapus pesanan
+        // --- MULAI PERBAIKAN STOK ---
+        
+        // 3. Ambil produk terkait pesanan ini
+        $produk = Produk::find($pesanan->produk_id);
+
+        // 4. Jika produknya masih ada di database, kembalikan stoknya
+        if ($produk) {
+            // Tambahkan stok lama dengan jumlah yang dibatalkan
+            $produk->increment('stok', $pesanan->jumlah_pesanan);
+        }
+        
+        // --- SELESAI PERBAIKAN STOK ---
+
+        // 5. Hapus pesanan
         $pesanan->delete();
 
-        // 4. Kembali dengan pesan sukses
-        return redirect()->back()->with('success', 'Pesanan berhasil dibatalkan.');
+        // 6. Kembali dengan pesan sukses
+        return redirect()->back()->with('success', 'Pesanan dibatalkan dan stok telah dikembalikan.');
     }
 
     /**

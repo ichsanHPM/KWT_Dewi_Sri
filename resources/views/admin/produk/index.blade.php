@@ -46,7 +46,7 @@
                     <td>Rp {{ number_format($produk->harga_produk, 0, ',', '.') }}</td>
                     <td>
                         <span class="badge {{ $produk->stok > 0 ? 'bg-success' : 'bg-danger' }}">
-                            {{ $produk->stok }} pcs
+                            {{ $produk->stok }} 
                         </span>
                     </td>
                     <td>

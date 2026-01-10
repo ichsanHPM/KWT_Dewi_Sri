@@ -45,6 +45,21 @@
                         <input type="number" class="form-control" id="stok" name="stok" value="{{ old('stok', 0) }}" min="0" required placeholder="Masukkan jumlah stok tersedia">
                         <div class="form-text">Masukkan angka 0 jika barang habis.</div>
                     </div>
+
+                    <div class="mb-3">
+                        <label for="satuan" class="form-label fw-bold">Satuan Produk</label>
+                        <select class="form-select" id="satuan" name="satuan" required>
+                            <option value="" disabled selected>-- Pilih Satuan --</option>
+                            <option value="pcs" {{ old('satuan') == 'pcs' ? 'selected' : '' }}>Pcs (Buah)</option>
+                            <option value="kg" {{ old('satuan') == 'kg' ? 'selected' : '' }}>Kg (Kilogram)</option>
+                            <option value="ikat" {{ old('satuan') == 'ikat' ? 'selected' : '' }}>Ikat</option>
+                            <option value="bungkus" {{ old('satuan') == 'bungkus' ? 'selected' : '' }}>Bungkus</option>
+                            <option value="ons" {{ old('satuan') == 'ons' ? 'selected' : '' }}>Ons</option>
+                            <option value="gram" {{ old('satuan') == 'gram' ? 'selected' : '' }}>Gram</option>
+                            <option value="liter" {{ old('satuan') == 'liter' ? 'selected' : '' }}>Liter</option>
+                        </select>
+                        <div class="form-text">Pilih satuan jual produk ini (Contoh: Kg untuk Timun).</div>
+                    </div>
                     
                     <div class="mb-3">
                         <label for="deskripsi_produk" class="form-label fw-bold">Deskripsi</label>

@@ -49,6 +49,21 @@
                     </div>
 
                     <div class="mb-3">
+                        <label for="satuan" class="form-label fw-bold">Satuan Produk</label>
+                        <select class="form-select" id="satuan" name="satuan" required>
+                            {{-- Logika: Jika di database isinya 'pcs', maka tambahkan kata 'selected' --}}
+                            <option value="pcs" {{ $produk->satuan == 'pcs' ? 'selected' : '' }}>Pcs (Buah)</option>
+                            <option value="kg" {{ $produk->satuan == 'kg' ? 'selected' : '' }}>Kg (Kilogram)</option>
+                            <option value="ikat" {{ $produk->satuan == 'ikat' ? 'selected' : '' }}>Ikat</option>
+                            <option value="bungkus" {{ $produk->satuan == 'bungkus' ? 'selected' : '' }}>Bungkus</option>
+                            <option value="ons" {{ $produk->satuan == 'ons' ? 'selected' : '' }}>Ons</option>
+                            <option value="gram" {{ $produk->satuan == 'gram' ? 'selected' : '' }}>Gram</option>
+                            <option value="liter" {{ $produk->satuan == 'liter' ? 'selected' : '' }}>Liter</option>
+                        </select>
+                        <div class="form-text">Ubah satuan jika diperlukan.</div>
+                    </div>
+
+                    <div class="mb-3">
                         <label for="deskripsi_produk" class="form-label fw-bold">Deskripsi</label>
                         <textarea class="form-control" id="deskripsi_produk" name="deskripsi_produk" rows="3">{{ old('deskripsi_produk', $produk->deskripsi_produk) }}</textarea>
                     </div>
