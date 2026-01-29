@@ -5,7 +5,6 @@
 @section('styles')
 <style>
     .hero-section {
-        /* Background gambar ibu-ibu KWT atau kebun (Ganti URL jika sudah ada foto asli) */
         background: linear-gradient(rgba(21, 87, 36, 0.85), rgba(20, 108, 67, 0.8)), url('https://i1.wp.com/www.dprd-diy.go.id/wp-content/uploads/2025/10/Dari-Lahan-Sempit-KWT-Dewi-Sri-Hadirkan-Inovasi-Urban-Farming-di-Kentungan-scaled.jpg');
         background-size: cover;
         background-position: center;
@@ -29,6 +28,24 @@
         display: flex; align-items: center; justify-content: center;
     }
     .product-img-wrapper img { width: 100%; height: 100%; object-fit: cover; }
+    
+    /* Styling khusus untuk wrapper video agar responsif */
+    .video-container {
+        position: relative;
+        padding-bottom: 56.25%; /* Rasio aspek 16:9 */
+        height: 0;
+        overflow: hidden;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    }
+    .video-container iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: 0;
+    }
 </style>
 @endsection
 
@@ -81,7 +98,7 @@
         </div>
     </section>
 
-    <section class="py-5 bg-light">
+    <section class="py-5 bg-white">
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-md-6 order-md-2">
@@ -100,6 +117,33 @@
                     <a href="{{ route('galeri.list') }}" class="btn btn-outline-success rounded-pill px-4">
                         Lihat Dokumentasi Kegiatan <i class="fas fa-arrow-right ms-2"></i>
                     </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-5 mb-4" style="background-color: #f0f7f2;">
+        <div class="container py-3">
+            <div class="row align-items-center">
+                <div class="col-lg-5 mb-4 mb-lg-0 pe-lg-5">
+                    <h2 class="fw-bold mb-3">Cerita dari Kebun Kami</h2>
+                    <p class="text-muted mb-4">
+                        Kebahagiaan sederhana bermula dari sini. Mengolah tanah, merawat tanaman, hingga menikmati panen bersama. Intip momen-momen seru kebersamaan ibu-ibu KWT Dewi Sri yang penuh tawa dan semangat gotong royong.
+                    </p>
+                    <a href="https://www.youtube.com/watch?v=PVDlVR1KAsw" target="_blank" class="btn btn-outline-success rounded-pill fw-bold">
+                        <i class="fab fa-youtube me-2 text-danger"></i> Tonton di YouTube
+                    </a>
+                </div>
+                
+                <div class="col-lg-7">
+                    <div class="video-container shadow-lg rounded-4">
+                        <iframe 
+                            src="https://www.youtube.com/embed/PVDlVR1KAsw?si=wUP97qRY23sHRyIL" 
+                            title="Video Profil KWT Dewi Sri" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                            allowfullscreen>
+                        </iframe>
+                    </div>
                 </div>
             </div>
         </div>

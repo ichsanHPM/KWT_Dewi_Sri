@@ -22,7 +22,7 @@ class Pesanan extends Model
         'status',
     ];
 
-    // Relasi ke Produk (ambil nama produk/foto)
+    // Relasi ke Produk withtrashed (soft delete agar riwayat pesanan tidak eror), belongsto (jenis relasi)
     public function produk()
     {
         return $this->belongsTo(Produk::class, 'produk_id')->withTrashed();
@@ -34,6 +34,7 @@ class Pesanan extends Model
         return $this->belongsTo(User::class);
     }
 
+    // Relasi ke KonfirmasiPembayaran
     public function konfirmasi()
     {
         return $this->hasOne(KonfirmasiPembayaran::class);

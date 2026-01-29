@@ -10,7 +10,7 @@ use App\Models\RiwayatPemesanan;
 use App\Services\FonnteService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Auth; // <-- Kita butuh ini untuk tahu siapa yg login
+use Illuminate\Support\Facades\Auth; 
 
 class UserController extends Controller
 {
@@ -211,7 +211,7 @@ class UserController extends Controller
         if ($request->hasFile('bukti_transfer')) {
             $file = $request->file('bukti_transfer');
             
-            // Bersihkan nama file (opsional tapi bagus)
+            // Bersihkan nama file 
             $namaAsli = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
             // Tambahkan timestamp agar unik
             $namaFileFoto = time() . '_' . preg_replace('/[^A-Za-z0-9\-]/', '', $namaAsli) . '.' . $file->getClientOriginalExtension();

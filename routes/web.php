@@ -23,6 +23,7 @@ Route::get('/galeri', [PublicController::class, 'galeri'])->name('galeri.list');
 
 Auth::routes();
 
+//Rute User  (WAJIB login sebagai 'user')
 Route::middleware(['auth', 'role:user'])->group(function () {
 
     // Halaman dashboard 'user' setelah login

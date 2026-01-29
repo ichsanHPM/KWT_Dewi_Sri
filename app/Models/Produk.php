@@ -10,7 +10,7 @@ class Produk extends Model
 {
     use HasFactory, SoftDeletes;
 
-    //Daftar kolom yang Boleh diisi secara massal.
+    // Daftar kolom yang boleh diisi
     protected $fillable = [
         'nama_produk',
         'harga_produk',

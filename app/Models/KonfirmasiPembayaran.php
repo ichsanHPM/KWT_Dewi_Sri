@@ -9,6 +9,7 @@ class KonfirmasiPembayaran extends Model
 {
     use HasFactory;
 
+    // Daftar kolom yang boleh diisi
     protected $fillable = [
         'pesanan_id',
         'tanggal_konfirmasi',

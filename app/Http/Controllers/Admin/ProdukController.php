@@ -36,6 +36,7 @@ class ProdukController extends Controller
      */
     public function store(Request $request)
     {
+        // dd($request->all());
         // 1. Validasi data (pastikan data diisi dengan benar)
         $request->validate([
             'nama_produk' => 'required|string|max:100',
@@ -168,3 +169,7 @@ class ProdukController extends Controller
                          ->with('success', 'Produk berhasil dihapus.');
     }
 }
+
+
+
+

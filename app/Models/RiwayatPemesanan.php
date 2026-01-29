@@ -9,6 +9,7 @@ class RiwayatPemesanan extends Model
 {
     use HasFactory;
 
+    // Daftar kolom yang boleh diisi
     protected $fillable = [
         'user_id',
         'produk_id',
@@ -18,6 +19,13 @@ class RiwayatPemesanan extends Model
         'status',
     ];
 
-    public function user() { return $this->belongsTo(User::class); }
-    public function produk() { return $this->belongsTo(Produk::class); }
+    // Relasi ke User
+    public function user() {
+        return $this->belongsTo(User::class); 
+    }
+
+    // Relasi ke produk
+    public function produk() {
+        return $this->belongsTo(Produk::class);
+    }
 }

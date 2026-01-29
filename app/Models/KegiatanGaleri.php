@@ -9,9 +9,7 @@ class KegiatanGaleri extends Model
 {
     use HasFactory;
 
-    /**
-     * Daftar kolom yang Boleh diisi secara massal.
-     */
+    // Daftar kolom yang boleh diisi
     protected $fillable = [
         'judul_kegiatan',
         'deskripsi_kegiatan',
